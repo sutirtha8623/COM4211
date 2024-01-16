@@ -4,10 +4,11 @@
 using namespace std;
 
 class Nqueens {
+    int sol_count;
     int board_size;
     vector<int> solution_board;
 public:
-    Nqueens(int size) : board_size(size) {}
+    Nqueens(int size) : board_size(size), sol_count(0) {}
 
     bool is_valid(vector<int> board, int row_idx) {
         for (int i =0; i < board.size(); i++) {
@@ -35,7 +36,8 @@ public:
     void search(vector<int> board, int curr_idx) {
         if (curr_idx == board_size) {
             print_board(board);
-            exit(0);
+            sol_count++;
+            cout << "Solution: " << sol_count << endl;
         }
 
         for (int i = 0; i < board_size; i++) {
@@ -51,9 +53,14 @@ public:
         search(solution_board, 0);
     }
 
+    void print_count() {
+        cout << "Total solutions: " << sol_count << endl;
+    }
+
 };
 
 int main() {
-    Nqueens nq(25);
+    Nqueens nq(15);
     nq.goal_search();
+    nq.print_count();
 }
