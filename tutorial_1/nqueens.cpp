@@ -1,81 +1,59 @@
 #include <iostream>
 #include <vector>
-#include <algorithm>
 
 using namespace std;
 
-class Board {
-    int size;
-    vector<int> queens;
+class Nqueens {
+    int board_size;
+    vector<int> solution_board;
 public:
-    Board(int s) : size(s) {queens.resize(size, -1);}
+    Nqueens(int size) : board_size(size) {}
 
-    void add_queen(int col_idx, int row_idx) {
-        queens[col_idx] = row_idx;
-    }
-
-    void set_board(vector<int> b) {
-        for (int i = 0; i < size; i++) {
-            queens[i] = b[i];
+    bool is_valid(vector<int> board, int row_idx) {
+        for (int i =0; i < board.size(); i++) {
+            if (row_idx == board[i]) return false;
         }
+        int curr_index = board.size();
+        for (int i = 0; i < board.size(); i++) {
+            if (board[i] + (curr_index-i) == row_idx || board[i] - (curr_index-i) == row_idx) return false;
+        }
+        return true;
     }
 
-    vector<int> get_queens() {
-        return queens;
-    }
-
-    void print_board() {
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                if (j == queens[i]) {
+    void print_board(vector<int> board) {
+        for (int i = 0; i < board.size(); i++) {
+            for (int j = 0; j < board.size(); j++) {
+                if (j == board[i]) {
                     cout << "Q ";
                 }
-                else cout << "* ";
+                else cout << "- ";
             }
             cout << endl;
         }
     }
 
-    int get_size() {
-        return size;
-    }
-};
-
-class Nqueens {
-    int board_size;
-public:
-    Nqueens(Board board){
-        board_size = board.get_size();
-    }
-
-    bool is_viable(Board board, int new_row_idx) {
-        vector<int> queens = board.get_queens();
-        if (find(queens.begin(), queens.end(), new_row_idx) != queens.end()) return false;
-        for (int i = 0; i < board_size; i++) {
-            if (queens[i] + (board_size - i) == new_row_idx || queens[i] - (board_size - i) == new_row_idx) return false;
-        }
-        return true;
-    }
-
-    void goal_search(Board board, int curr_idx) {
+    void search(vector<int> board, int curr_idx) {
         if (curr_idx == board_size) {
-            cout << "foo";
-            board.print_board();
+            print_board(board);
             exit(0);
         }
-        
+
         for (int i = 0; i < board_size; i++) {
-            if (is_viable(board, i)) {
-                board.add_queen(curr_idx, i);
-                goal_search(board, curr_idx+1);
-                board.add_queen(curr_idx, -1);
+            if (is_valid(board, i)) {
+                board.push_back(i);
+                search(board, curr_idx+1);
+                board.pop_back();
             }
         }
     }
+
+    void goal_search() {
+        search(solution_board, 0);
+    }
+
 };
 
 int main() {
-    Board board(8);
-    Nqueens nqueens(board);
-    nqueens.goal_search(board, 0);
+    Nqueens nq(25);
+    nq.goal_search();
 }
