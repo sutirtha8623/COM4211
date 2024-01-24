@@ -20,9 +20,10 @@ public:
             // Check if there is already a queen in the same row
             if (row_idx == board[i])
                 return false;
-
-            // Check diagonally for queens in the same line of attack
-            int curr_index = board.size();
+        }
+        int curr_index = board.size();
+        // Check diagonally for queens in the same line of attack
+        for (int i = 0; i < board.size(); i++) {
             if (board[i] + (curr_index - i) == row_idx || board[i] - (curr_index - i) == row_idx)
                 return false;
         }
