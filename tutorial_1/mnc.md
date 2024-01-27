@@ -6,7 +6,7 @@ Consider the tuple `(m, c, b)` where m denotes the number of cannibals on the in
 Therefore for our problem, the initial state is `(3, 3, 1)` and the goal state is obviously `(0, 0, 0)`. And the actions are also defined as 3-tuples as follows - 
 `(⟨1,0,1⟩, ⟨2,0,1⟩, ⟨0,1,1⟩, ⟨0,2,1⟩, ⟨1,1,1⟩)`. The actions are performed by adding and subtracting the actions tuples from each state alternatively. We can check for valid states by ensuring that there are more missionaries than cannibals on both sides. Ignoring the repeated states and the invalid states, the state space diagram is as follows - 
 
-![[New Doc 01-27-2024 23.44.jpg]]
+![[state.jpg]]
 
 Yes we should check for repeated states in out program using a `explored` list. Otherwise we may fall into a loop within the space tree and there will be redundant exploration. 
 
