@@ -54,11 +54,13 @@ public:
     State perform_action(Tuple action, char signum) {
         if (signum == '+') {
             Tuple child = state + action;
-            return State(child, this);
+            State* parent = this;
+            return State(child, parent);
         }
         else {
             Tuple child = state - action;
-            return State(child, this);
+            State* parent = this;
+            return State(child, parent);
         }
     }
 
@@ -77,7 +79,7 @@ public:
 
     void print_path() {
         State* curr = this;
-        while (curr != nullptr) {
+        for (int i = 0; i < 11; i++) {
             cout << curr->state << "<- ";
             curr = curr->parent;
         }
@@ -87,15 +89,16 @@ public:
 };
 
 vector<Tuple> action_set = {Tuple(1, 0, 1), Tuple(2, 0, 1), Tuple(0, 1, 1), Tuple(0, 2, 1), Tuple(1, 1, 1)};
-
+vector<State> frontier;
+vector<State> explored;
 void BFS(State init) {
     if (init.check_goal()) {
         cout << "Found goal!\n";
         return;
     }
-    vector<State> frontier;
+    
     frontier.push_back(init);
-    vector<State> explored;
+    
     char curr_sign = '-';
     int level = 0;
 
@@ -119,7 +122,7 @@ void BFS(State init) {
                 cout << "Exploring "<< child.get_state() << endl;
                 if (child.check_goal()) {
                     cout << "Found goal!" << endl;
-                    // child.print_path();
+                    child.print_path();
                     return;
                 }
                 frontier.push_back(child);
@@ -132,6 +135,6 @@ void BFS(State init) {
 
 int main() {
     Tuple init(3, 3, 1);
-    State init_state(init);
-    BFS(init);
+    State initstate(init);
+    BFS(initstate);
 }
