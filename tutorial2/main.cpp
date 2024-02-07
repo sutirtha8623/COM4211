@@ -5,7 +5,7 @@
 #include <algorithm>
 #include "board.hpp"
 
-bool compare_board(Board& b1, Board& b2) {
+bool compare_board(Board b1, Board b2) {
     return b1.f > b2.f;
 }
 
