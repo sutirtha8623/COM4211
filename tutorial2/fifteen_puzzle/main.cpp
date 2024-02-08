@@ -39,22 +39,28 @@ void goal_search(Board start, Board goal) {
     unordered_map<int, pair<int, int>> goal_map = board_to_umap(goal);
     vector<Board> fringe;
     vector<Board> explored;
-    Board curr = start;
+    
     start.g = 0;
     start.f = start.g + start.h(goal_map);
+    Board curr = start;
     fringe.push_back(start);
     while (!fringe.empty()) {
         sort(fringe.begin(), fringe.end(), compare_board);
         curr = fringe.back();
+        fringe.pop_back();
+        cout << curr.g << endl;
         if (curr == goal) {
             cout << "Found goal!" << endl;
             backtrack(curr, parents);
+            return;
         }
-        fringe.pop_back();
         auto children = curr.generate_children();
         for (auto child : children) {
             if (!in(child, fringe) && !(in(child, explored))) {
+                cout << "Exploring: " << endl;
+                child.print();
                 child.g = curr.g + 1;
+                // cout << child.g << endl;
                 child.f = child.g + child.h(goal_map);
                 Board* p = new Board(curr);
                 child.parent = p;
@@ -68,10 +74,17 @@ void goal_search(Board start, Board goal) {
 }
 
 int main() {
-    vector<int> goal = {1, 2 ,3, 4 ,5 ,6 ,7 ,8 ,9 ,10, 11, 12, 13, 14, 15, 0};
-    vector<int> start = {1, 9, 2, 3, 5, 12, 11, 10, 13, 6 ,0 ,8 ,7 ,14, 15, 4};
+    vector<int> start = {1, 2 ,3, 4 ,5 ,6 ,7 ,8 ,9 ,10, 11, 12, 13, 14, 15, 0};
+    vector<int> goal = {1, 2, 3, 4, 5, 0, 6, 7, 9, 10, 11, 8, 13, 14, 15, 12};
     Board start_boa(start);
     Board goal_boa(goal);
 
+    // auto umap = board_to_umap(goal);
+    // cout << start_boa.h(umap);
+
     goal_search(start_boa, goal_boa);
+    for (auto i : parents) {
+        i.print();
+        cout << endl;
+    }
 }

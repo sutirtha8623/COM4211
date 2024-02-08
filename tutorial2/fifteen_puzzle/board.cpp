@@ -31,10 +31,13 @@ Board::Board(const Board& b) {
         }
     }
     data = v;
+    g = b.g;
+    f = b.f;
     empty = make_pair(b.empty.first, b.empty.second);
 }
 
 bool Board::operator==(Board& b) {
+    if (empty.first != b.empty.first && empty.second != b.empty.second) return false;
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
             if (data[i][j] != b.data[i][j]) return false;
@@ -133,6 +136,7 @@ int Board::h(unordered_map<int, pair<int, int>> goal) {
     int h = 0;
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
+            if (data[i][j] == 0) continue;
             auto goal_idx = goal[data[i][j]];
             h += abs(goal_idx.first-i) + abs(goal_idx.second-j);
         }
