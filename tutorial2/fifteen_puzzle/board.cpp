@@ -5,15 +5,16 @@
 #include <iomanip>
 #include <unordered_map>
 #include "board.hpp"
+#define n 4
 using namespace std;
 
 
 Board::Board(vector<int> input) {
-    data.resize(4); 
-    for (int i = 0; i < 4; i++) {
-        data[i].resize(4);
-        for (int j = 0; j < 4; j++) {
-            int idx = 4*i + j;
+    data.resize(n); 
+    for (int i = 0; i < n; i++) {
+        data[i].resize(n);
+        for (int j = 0; j < n; j++) {
+            int idx = n*i + j;
             data[i][j] = input[idx];
             if (data[i][j] == 0) {
                 empty = make_pair(i, j);
@@ -24,22 +25,23 @@ Board::Board(vector<int> input) {
 }
 
 Board::Board(const Board& b) {
-    vector<vector<int>> v (4, vector<int>(4));
-    for (int i = 0; i < 4; i ++) {
-        for (int j = 0; j < 4; j++) {
+    vector<vector<int>> v (n, vector<int>(n));
+    for (int i = 0; i < n; i ++) {
+        for (int j = 0; j < n; j++) {
             v[i][j] = b.data[i][j];
         }
     }
     data = v;
     g = b.g;
     f = b.f;
+    parent = b.parent;
     empty = make_pair(b.empty.first, b.empty.second);
 }
 
 bool Board::operator==(Board& b) {
     if (empty.first != b.empty.first && empty.second != b.empty.second) return false;
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
             if (data[i][j] != b.data[i][j]) return false;
         }
     }
@@ -134,8 +136,8 @@ vector<Board> Board::generate_children() {
 
 int Board::h(unordered_map<int, pair<int, int>> goal) {
     int h = 0;
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
             if (data[i][j] == 0) continue;
             auto goal_idx = goal[data[i][j]];
             h += abs(goal_idx.first-i) + abs(goal_idx.second-j);
@@ -145,8 +147,9 @@ int Board::h(unordered_map<int, pair<int, int>> goal) {
 }
 
 void Board::print() {
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
+    // if (this == nullptr) cout << "foo";
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
             cout << setw(3) << data[i][j];
         }
         cout << endl;

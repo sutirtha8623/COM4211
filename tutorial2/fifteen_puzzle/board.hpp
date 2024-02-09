@@ -7,11 +7,12 @@
 #include <unordered_map>
 using namespace std;
 
+
 class Board {
 public:
     vector<vector<int>> data;
     pair<int, int> empty;
-    int g, f;
+    int g, f, n;
     Board* parent;
 
     Board(vector<int>);
