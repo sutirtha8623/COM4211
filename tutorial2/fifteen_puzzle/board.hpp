@@ -15,7 +15,7 @@ public:
     int g, f, n;
     Board* parent;
 
-    Board(vector<int>);
+    Board(vector<int>, int);
     Board(const Board&);
     bool operator== (Board& b);
 

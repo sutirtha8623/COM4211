@@ -5,11 +5,11 @@
 #include <iomanip>
 #include <unordered_map>
 #include "board.hpp"
-#define n 4
 using namespace std;
 
 
-Board::Board(vector<int> input) {
+Board::Board(vector<int> input, int size) {
+    n = size;
     data.resize(n); 
     for (int i = 0; i < n; i++) {
         data[i].resize(n);
@@ -25,6 +25,7 @@ Board::Board(vector<int> input) {
 }
 
 Board::Board(const Board& b) {
+    n = b.n;
     vector<vector<int>> v (n, vector<int>(n));
     for (int i = 0; i < n; i ++) {
         for (int j = 0; j < n; j++) {
@@ -94,13 +95,13 @@ bool Board::is_valid_move(string move) {
     if (move == "up" && empty.first == 0) {
         return false;
     }
-    else if (move == "down" && empty.first == 3) {
+    else if (move == "down" && empty.first == n-1) {
         return false;
     }
     else if (move == "left" && empty.second == 0) {
         return false;
     }
-    else if (move == "right" && empty.second == 3) {
+    else if (move == "right" && empty.second == n-1) {
         return false;
     }
     else {

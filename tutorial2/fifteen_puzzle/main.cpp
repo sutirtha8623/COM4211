@@ -2,6 +2,7 @@
 #include <vector>
 #include <unordered_map>
 #include <utility>
+#include <queue>
 #include <algorithm>
 #include "board.hpp"
 
@@ -27,8 +28,8 @@ void backtrack(Board current, vector<Board>& parents) {
 
 unordered_map<int, pair<int, int>> board_to_umap (Board b) {
     unordered_map<int, pair<int, int>> umap;
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
+    for (int i = 0; i < b.n; i++) {
+        for (int j = 0; j < b.n; j++) {
             umap[b.data[i][j]] = make_pair(i, j);
         }
     }
@@ -86,29 +87,18 @@ vector<int> input(vector<int> p) {
 }
 
 int main() {
-    // cout << "Enter the value of n: ";
-    // int size;
-    // cin >> size;
-    vector<int> start (16);
-    vector<int> goal (16);
+    cout << "Enter the value of n: ";
+    int size;
+    cin >> size;
+    vector<int> start (size*size);
+    vector<int> goal (size*size);
     cout << "Please enter the elements of the starting matrix in a single line and separated by a space, represent the blank with a zero: ";
-    int temp;
-    for (int i = 0; i < 16; i++) {
-        cin >> temp;
-        start[i] = temp;
-    }
+    start = input(start);
     cout << "Please enter the elements of the goal matrix in a single line and separated by a space, represent the blank with a zero: ";
-    for (int i = 0; i < 16; i++) {
-        cin >> temp;
-        goal[i] = temp;
-    }
-    // goal = input(goal);
+    goal = input(goal);
 
-    // vector<int> start = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0};
-    // vector<int> goal = {1, 2, 3, 4, 5, 6, 7, 9, 0, 8, 10, 11, 12, 13, 14, 15};
-
-    Board start_boa(start);
-    Board goal_boa(goal);
+    Board start_boa(start, size);
+    Board goal_boa(goal, size);
 
     
     goal_search(start_boa, goal_boa);
