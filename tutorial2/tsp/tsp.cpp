@@ -7,12 +7,13 @@
 #include <vector>
 #include <utility>
 #include <limits>
+#include <algorithm>
 #include <string>
 using namespace std;
 using namespace boost;
 
 
-typedef adjacency_list<vecS, vecS, directedS, no_property, property<edge_weight_t, int>> Graph;
+typedef adjacency_list<vecS, vecS, undirectedS, no_property, property<edge_weight_t, int>> Graph;
 typedef graph_traits<Graph>::vertex_descriptor Vertex;
 typedef graph_traits<Graph>::edge_descriptor Edge;
 typedef property_map<Graph, edge_weight_t>::type WeightMap;
@@ -23,9 +24,10 @@ int calculate_h(Graph g, vector<int> path) {
     vector<Edge> MST;
     Graph g_copy;
     copy_graph(g, g_copy);
-    for (int i = 1; i < path.size(); i++) {
-        clear_vertex(i, g_copy);
-        remove_vertex(i, g_copy);
+    if (path.size() <= 2) {return 0;}
+    for (vector<int>::iterator i = path.begin()+1; i < path.end(); i++) {
+        clear_vertex(*i, g_copy);
+        remove_vertex(*i, g_copy);
     }
     kruskal_minimum_spanning_tree(g_copy, back_inserter(MST));
 
@@ -38,7 +40,7 @@ int calculate_h(Graph g, vector<int> path) {
 
 struct State {
     vector<int> tour;
-    int f;
+    int f, g;
     State(vector<int> v) : tour(v){};
     friend ostream& operator<< (ostream& os, const State& s) {
         os << "{";
@@ -57,17 +59,22 @@ bool state_comparator(State s1, State s2) {
 vector<int> goal_search(Graph g, int init) {
     vector<State> frontier;
     int num = num_vertices(g);
-    int curr_g = 0;
 
     vector<int> current_tour;
     current_tour.push_back(init);
     State start(current_tour);
     start.f = calculate_h(g, {});
+    start.g = 0;
     frontier.push_back(start);
 
     while(!frontier.empty()) {
         sort(frontier.begin(), frontier.end(), state_comparator);
+        for(auto i : frontier) {
+            cout << i << "("<< i.f <<")" << ", ";
+        }
+        cout << "}" << endl << endl;
         auto current_state = frontier.back();
+        current_tour = current_state.tour;
         frontier.pop_back();
 
         if (current_state.tour.size() == num) {
@@ -85,21 +92,15 @@ vector<int> goal_search(Graph g, int init) {
                 Edge e;
                 bool exists;
                 tie(e, exists) = edge(v1, v2, g);
-
-                curr_g = curr_g + get(weight_map, e);
+                int cost = current_state.g + get(weight_map, e); + calculate_h(g, current_tour);
+                // curr_g = curr_g + get(weight_map, e);
                 vector<int> next_tour = current_tour;
                 next_tour.push_back(next_vertex);
-                current_tour = next_tour;
                 State next(next_tour);
-                int cost = curr_g + calculate_h(g, current_tour);
                 next.f = cost;
+                next.g = current_state.g + get(weight_map, e);
                 frontier.push_back(next);
             }
-            // cout << "{";
-            // for(auto i : frontier) {
-            //     cout << i << ", " << endl;
-            // }
-            // cout << "}" << endl;
         }
     }
 }
@@ -112,7 +113,7 @@ int main()
     add_edge(0, 1, {1}, g);
     add_edge(0, 2, {8}, g);
     add_edge(0, 3, {2}, g);
-    add_edge(1, 2, {4}, g);
+    add_edge(1, 2, {10}, g);
     add_edge(1, 3, {9}, g);
     add_edge(2, 3, {3}, g);
 
@@ -120,7 +121,7 @@ int main()
 
     // cout << calculate_h(g, v) << endl;
 
-    vector<int> tour = goal_search(g, 0);
+    vector<int> tour = goal_search(g, 3);
     for (auto i : tour) {
         cout << i;
     }
