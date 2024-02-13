@@ -24,11 +24,15 @@ int calculate_h(Graph g, vector<int> path) {
     vector<Edge> MST;
     Graph g_copy;
     copy_graph(g, g_copy);
-    if (path.size() <= 2) {return 0;}
-    for (vector<int>::iterator i = path.begin()+1; i < path.end(); i++) {
-        clear_vertex(*i, g_copy);
-        remove_vertex(*i, g_copy);
+    if (path.size() <= 1) {}
+    else if (path.size() == 2) {remove_edge(path[0], path[1], g_copy);}
+    else {
+        for (vector<int>::iterator i = path.begin()+1; i < path.end(); i++) {
+            clear_vertex(*i, g_copy);
+            remove_vertex(*i, g_copy);
+        }
     }
+    
     kruskal_minimum_spanning_tree(g_copy, back_inserter(MST));
 
     int h = 0;
@@ -77,7 +81,7 @@ vector<int> goal_search(Graph g, int init) {
         current_tour = current_state.tour;
         frontier.pop_back();
 
-        if (current_state.tour.size() == num) {
+        if (current_state.tour.size() == num+1) {
             return current_tour;
         }
     
@@ -85,20 +89,20 @@ vector<int> goal_search(Graph g, int init) {
         for (tie(ai, ai_end) = adjacent_vertices(current_tour.back(), g); ai != ai_end; ++ai) {
             WeightMap weight_map = get(edge_weight, g);
             int next_vertex = *ai;
-            if (find(current_tour.begin(), current_tour.end(), next_vertex) == current_tour.end()) {
+            if (find(current_tour.begin(), current_tour.end(), next_vertex) == current_tour.end() || (next_vertex == init && current_tour.size() == num)) {
                 // cout << "foo" << endl; 
                 Vertex v1 = vertex(current_tour.back(), g);
                 Vertex v2 = vertex(next_vertex, g);
                 Edge e;
                 bool exists;
                 tie(e, exists) = edge(v1, v2, g);
-                int cost = current_state.g + get(weight_map, e); + calculate_h(g, current_tour);
+                int cost = get(weight_map, e) + calculate_h(g, current_tour);
                 // curr_g = curr_g + get(weight_map, e);
                 vector<int> next_tour = current_tour;
                 next_tour.push_back(next_vertex);
                 State next(next_tour);
                 next.f = cost;
-                next.g = current_state.g + get(weight_map, e);
+                next.g = get(weight_map, e);
                 frontier.push_back(next);
             }
         }
@@ -121,7 +125,7 @@ int main()
 
     // cout << calculate_h(g, v) << endl;
 
-    vector<int> tour = goal_search(g, 3);
+    vector<int> tour = goal_search(g, 0);
     for (auto i : tour) {
         cout << i;
     }
