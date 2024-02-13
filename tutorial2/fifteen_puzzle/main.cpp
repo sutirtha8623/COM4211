@@ -51,7 +51,7 @@ void goal_search(Board start, Board goal) {
         sort(fringe.begin(), fringe.end(), compare_board);
         curr = fringe.back();
         fringe.pop_back();
-        cout << curr.g << endl;
+        // cout << curr.g << endl;
         if (curr == goal) {
             cout << "Found goal!" << endl;
             backtrack(curr, parents);
@@ -62,8 +62,8 @@ void goal_search(Board start, Board goal) {
 
         for (auto child : children) {
             if (!in(child, fringe) && !(in(child, explored))) {
-                cout << "Exploring: " << endl;
-                child.print();
+                // cout << "Exploring: " << endl;
+                // child.print();
                 child.g = curr.g + 1;
                 child.f = child.g + child.h(goal_map);
                 Board* p = new Board(curr);
@@ -105,7 +105,7 @@ int main() {
     cout << "Path: " << endl;
     for (int i = parents.size() - 1; i >= 0; i--) {
         parents[i].print();
-        if (i != 0) cout << " --> " << endl;
+        // if (i != 0) cout << " --> " << endl;
     }
     cout << endl;
 }

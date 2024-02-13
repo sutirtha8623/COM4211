@@ -14,6 +14,7 @@ public:
     pair<int, int> empty;
     int g, f, n;
     Board* parent;
+    int move;
 
     Board(vector<int>, int);
     Board(const Board&);

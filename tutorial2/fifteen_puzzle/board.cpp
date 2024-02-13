@@ -3,6 +3,7 @@
 #include <utility>
 #include <cstdlib>
 #include <iomanip>
+#include <string>
 #include <unordered_map>
 #include "board.hpp"
 using namespace std;
@@ -22,6 +23,7 @@ Board::Board(vector<int> input, int size) {
         }
     }
     g = 0; f = 0; parent = nullptr;
+    move = -1;
 }
 
 Board::Board(const Board& b) {
@@ -36,6 +38,7 @@ Board::Board(const Board& b) {
     g = b.g;
     f = b.f;
     parent = b.parent;
+    move = b.move;
     empty = make_pair(b.empty.first, b.empty.second);
 }
 
@@ -115,21 +118,25 @@ vector<Board> Board::generate_children() {
     if (is_valid_move("up")) {
         Board child(parent);
         child.up();
+        child.move = 0;
         children.push_back(child);
     }
     if (is_valid_move("down")) {
         Board child(parent);
         child.down();
+        child.move = 1;
         children.push_back(child);
     }
     if (is_valid_move("left")) {
         Board child(parent);
         child.left();
+        child.move = 2;
         children.push_back(child);
     }
     if (is_valid_move("right")) {
         Board child(parent);
         child.right();
+        child.move = 3;
         children.push_back(child);
     }
     return children;
@@ -149,6 +156,23 @@ int Board::h(unordered_map<int, pair<int, int>> goal) {
 
 void Board::print() {
     // if (this == nullptr) cout << "foo";
+    switch (move)
+    {
+    case 0:
+        cout <<"----" << "move up" << "----" << endl;
+        break;
+    case 1:
+        cout <<"----" << "move down" << "----" << endl;
+        break;
+    case 2:
+        cout <<"----" << "move left" << "----" << endl;
+        break;
+    case 3:
+        cout <<"----" << "move right" << "----" << endl;
+        break;
+    default:
+        break;
+    }
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
             cout << setw(3) << data[i][j];
