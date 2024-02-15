@@ -2,3 +2,5 @@
 a.cpp
 */.vscode
 .vscode
+*/
+*/__pycache__/*
