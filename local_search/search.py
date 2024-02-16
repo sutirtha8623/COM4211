@@ -144,7 +144,7 @@ def hill_climbing(problem):
         if problem.value(neighbor.state) <= problem.value(current.state):
             break
         print(f"Current state: {current.state}")
-        print(f"Objective fn (Number of non-attacking queens): {problem.value(current.state)}")
+        print(f"Objective fn (Number of pairs of non-attacking queens): {problem.value(current.state)}")
         print()
         moves = moves + 1
         current = neighbor
